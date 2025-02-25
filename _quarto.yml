@@ -1,0 +1,34 @@
+project:
+  type: website
+  resources:
+    - "fonts/*"
+    - "images/*"
+    - "favicon.ico"
+
+author:
+  - name: Benedikt Schnur
+    orcid: 0000-0002-1977-7878
+
+format:
+  revealjs:
+    theme: [default, ./custom.scss]
+    menu: false
+    slide-number: True
+    fig-format: retina
+    link-external-newwindow: True
+    logo: images/MHH_Logo.svg
+    controls: false
+    width: 1920
+    height: 1080
+
+
+knitr:
+  opts_chunk:
+    dev: png
+    dev.args: { bg: "transparent" }
+    tidy: styler
+
+bibliography:
+  - references.bib
+  - grateful-refs.bib
+csl: "american-medical-association.csl"
