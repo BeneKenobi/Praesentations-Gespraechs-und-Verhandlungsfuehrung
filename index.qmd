@@ -1,15 +1,13 @@
 ---
-title: "Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von schlechten Diagrammen"
+title: "Torten 🍰 und Kerzen 🕯️"
 lang: de
+execute:
+  echo: false
+nocite: |
+  @Holtz, @Siirtola2019, @Few2007, @Nussbaumer2011
 ---
 
-## {.center}
-
-**Präsentation basierend auf**
-
-*Friends Don't Let Friends Make Bad Graphs* [@Li2023]
-
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Tortendiagrammen [@Holtz;@Siirtola2019;@Few2007;@Nussbaumer2011]
+## Torten 🍰 [Diagramme]{.smallHeader}
 
 ```{r}
 # Libraries
@@ -60,11 +58,17 @@ margin_spacer <- function(x) {
 ```
 
 ```{r}
-#| echo: true
-#| code-fold: true
-#| label: fig-pies
-#| fig-cap: "Tortendiagramme"
 #| warning: false
+
+# Define the to_grey_scale function if it's not already defined
+to_grey_scale <- function(hex) {
+  temp <- col2rgb(hex) %>%
+    t() %>%
+    as.data.frame() %>%
+    mutate(gs = 0.299 * red + 0.587 * green + 0.114 * blue)
+
+  rgb(temp$gs, temp$gs, temp$gs, maxColorValue = 256)
+}
 
 data1 <- data.frame(name = letters[1:5], value = c(17, 18, 20, 22, 24))
 data2 <- data.frame(name = letters[1:5], value = c(20, 18, 21, 20, 20))
@@ -75,6 +79,39 @@ plot_pie <- function(data) {
     geom_bar(width = 1, stat = "identity") +
     coord_polar("y", start = 0, direction = -1) +
     bene_palette_shifted +
+    geom_text(aes(label = name), position = position_stack(vjust = 0.5), color = "white") +
+    xlab("") +
+    ylab("")
+}
+
+# Create an empty plot function with the same dimensions and structure as plot_pie
+plot_pie_empty <- function(data) {
+  # Using the same data structure as plot_pie but with transparent elements
+  ggplot(data, aes(x = "name", y = value, fill = name)) +
+    geom_bar(width = 1, stat = "identity", fill = "transparent", color = "transparent") +
+    coord_polar("y", start = 0, direction = -1) +
+    scale_fill_manual(values = rep("transparent", 5)) +
+    geom_text(aes(label = name), position = position_stack(vjust = 0.5), color = "transparent") +
+    xlab("") +
+    ylab("") +
+    theme(
+      panel.background = element_rect(fill = "transparent", colour = NA),
+      plot.background = element_rect(fill = "transparent", colour = NA),
+      axis.text = element_blank(),
+      axis.ticks = element_blank(),
+      panel.grid = element_blank()
+    )
+}
+
+# Modified pie chart with specific colors greyed out
+plot_pie_partial_gray <- function(data, grey_positions) {
+  colors_modified <- bene_colors[-1]
+  colors_modified[grey_positions] <- sapply(colors_modified[grey_positions], to_grey_scale)
+  
+  ggplot(data, aes(x = "name", y = value, fill = name)) +
+    geom_bar(width = 1, stat = "identity") +
+    coord_polar("y", start = 0, direction = -1) +
+    scale_fill_manual(values = colors_modified, breaks = waiver()) +
     geom_text(aes(label = name), position = position_stack(vjust = 0.5), color = "white") +
     xlab("") +
     ylab("")
@@ -92,64 +129,64 @@ a + b + c + patchwork_defaults
 - Länge ist am einfachsten zu schätzen und zu vergleichen
 :::
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Tortendiagrammen
+## Torten 🍰 [Diagramme]{.smallHeader}
 
 ```{r}
-#| echo: true
-#| code-fold: true
-#| label: fig-pievsstackbar
-#| fig-cap: "Tortendiagramme vs. Balkendiagramme (gestapelt)"
 #| warning: false
 
-# reuses plots of fig-pies
-
-# add source column to each data frame
-data1 <- data1 %>%
-  add_column(type = "I")
-data2 <- data2 %>%
-  add_column(type = "II")
-data3 <- data3 %>%
-  add_column(type = "III")
-
-# combine data frames into a single data frame
-data_combined <- rbind(data1, data2, data3)
-
-g <- ggplot(data_combined, aes(x = rev(type), y = value, fill = name)) +
-  geom_bar(position = position_fill(reverse = TRUE), stat = "identity", width = 0.25, color = "black") +
-  bene_palette_shifted +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.text.x = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank()
-  ) +
-  scale_x_discrete(expand = c(0, 0.4)) +
-  geom_text(aes(label = name), position = position_fill(vjust = 0.5, reverse = TRUE), color = "white") +
-  xlab("") +
-  ylab("") +
-  coord_flip()
-
-layout <- "
-AD
-BD
-CD
-"
-
-a + b + c + g + plot_layout(design = layout) + patchwork_defaults
+a <- plot_pie_partial_gray(data1, c(3, 4, 5))
+b <- plot_pie_partial_gray(data2, c(1:5))
+c <- plot_pie_partial_gray(data3, c(1:5))
+a + b + c + patchwork_defaults
 ```
 
-::: {.notes}
-- Keine Winkel mehr, trotzdem schwer zu vergleichen
-:::
-
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Tortendiagrammen
+## Torten 🍰 [Diagramme]{.smallHeader}
 
 ```{r}
-#| echo: true
-#| code-fold: true
-#| label: fig-pievsbar
-#| fig-cap: "Tortendiagramme vs. Balkendiagramme"
+#| warning: false
+
+a <- plot_pie_partial_gray(data1, c(2, 4, 5))
+b <- plot_pie_partial_gray(data2, c(1:5))
+c <- plot_pie_partial_gray(data3, c(1:5))
+a + b + c + patchwork_defaults
+```
+
+## Torten 🍰 [Diagramme]{.smallHeader}
+
+```{r}
+#| warning: false
+
+a <- plot_pie_partial_gray(data1, c(1:5))
+b <- plot_pie_partial_gray(data2, c(2, 4, 5))
+c <- plot_pie_partial_gray(data3, c(1:5))
+a + b + c + patchwork_defaults
+```
+
+## Torten 🍰 [Diagramme]{.smallHeader}
+
+```{r}
+#| warning: false 
+
+a <- plot_pie_partial_gray(data1, c(1:5))
+b <- plot_pie_partial_gray(data2, c(1:5))
+c <- plot_pie_partial_gray(data3, c(2, 4, 5))
+a + b + c + patchwork_defaults
+```
+
+## Torten 🍰 [Diagramme]{.smallHeader}
+
+```{r}
+#| warning: false 
+
+a <- plot_pie(data1)
+b <- plot_pie(data2)
+c <- plot_pie(data3)
+a + b + c + patchwork_defaults
+```
+
+## ~~Torten 🍰~~ Balken! [Diagramme]{.smallHeader}
+
+```{r}
 #| warning: false
 
 # reuses plots of fig-pies
@@ -163,6 +200,11 @@ plot_bar <- function(data) {
     xlab("") +
     ylab("")
 }
+
+# reuses pieplots from previous slides
+a <- plot_pie(data1)
+b <- plot_pie(data2)
+c <- plot_pie(data3)
 
 d <- plot_bar(data1)
 e <- plot_bar(data2)
@@ -185,11 +227,9 @@ a + b + c + d + e + f + plot_layout(design = layout) + patchwork_defaults
 - Balken sind viel leichter zu schätzen und zu vergleichen, nur eine Dimension
 :::
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Balkendiagrammen für Mittelwerte [@Weissgerber2015]
+## Balkendiagramme für Mittelwerte [@Weissgerber2015]
 
 ```{r}
-#| echo: true
-#| code-fold: true
 #| label: fig-meansseparationbar
 #| fig-cap: "Balkendiagramme für Mittelwerte"
 #| warning: false
@@ -250,11 +290,9 @@ bar <- groups_long %>%
 bar
 ```
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Balkendiagrammen für Mittelwerte
+## Balkendiagrammen für Mittelwerte
 
 ```{r}
-#| echo: true
-#| code-fold: true
 #| label: fig-meansseparationall
 #| fig-cap: "Alternativen: Boxplots und Beeswarm-Plots"
 #| warning: false
@@ -325,13 +363,9 @@ bar + box + beeswarm + patchwork_defaults
   - Points are outliers
 :::
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Violinplots für kleine Stichproben
+## Violinplots für kleine Stichproben 🎻
 
 ```{r}
-#| echo: true
-#| code-fold: true
-#| label: fig-violinoplotsmall1
-#| fig-cap: "Violinplots für kleine Stichproben (Punkt am Median)"
 #| warning: false
 
 # Generate three sets of data from a normal distribution with mean = 1 and sd = 1.
@@ -357,16 +391,12 @@ violin_eg <- data_set %>%
     axis.title.x = element_blank()
   )
 
-violin_eg
+violin_eg + plot_spacer() + plot_spacer()
 ```
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Violinplots für kleine Stichproben
+## Violinplots für kleine Stichproben 🎻
 
 ```{r}
-#| echo: true
-#| code-fold: true
-#| label: fig-violinoplotsmall2
-#| fig-cap: "Violinplots und Boxplots für kleine Stichproben"
 #| warning: false
 
 box_eg <- data_set %>%
@@ -382,16 +412,12 @@ box_eg <- data_set %>%
     axis.title.x = element_blank()
   )
 
-violin_eg + box_eg
+violin_eg + box_eg + plot_spacer()
 ```
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Violinplots für kleine Stichproben
+## ~~Violinplots für kleine Stichproben 🎻~~ Jitterplots!
 
 ```{r}
-#| echo: true
-#| code-fold: true
-#| label: fig-violinoplotsmall3
-#| fig-cap: "Violinplots, Boxplots und Jitterplots für kleine Stichproben (n = 5)"
 #| warning: false
 
 jitter_eg <- data_set %>%
@@ -414,11 +440,9 @@ jitter_eg <- data_set %>%
 violin_eg + box_eg + jitter_eg
 ```
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Balkendiagramm-Wäldern
+## Balkendiagramm-Wäldern
 
 ```{r}
-#| echo: true
-#| code-fold: true
 #| label: fig-barmeadows
 #| fig-cap: "Balkendiagramm für multifaktorielle Daten [@Sheesley]"
 #| warning: false
@@ -456,11 +480,9 @@ barmeadows <- sheesleyData %>%
 barmeadows
 ```
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Balkendiagramm-Wäldern
+## Balkendiagramm-Wäldern
 
 ```{r}
-#| echo: true
-#| code-fold: true
 #| label: fig-barmeadowsfixed
 #| fig-cap: "Multifaktorielle Daten als aufgeteilte Boxplots"
 #| warning: false
@@ -490,13 +512,9 @@ dotsformultifactor <- sheesleyData %>%
 dotsformultifactor
 ```
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader} Diagrammen mit Rot/Grün- oder Regenbogen-Farbskalen
+## Rot/Grün- oder Regenbogen-Farbskalen 🌈
 
 ```{r}
-#| echo: true
-#| code-fold: true
-#| label: fig-redgreen
-#| fig-cap: "Heatmaps mit verschiedenen Farbskalen, simuliert in Schwarz/Weiß und Deuteranopie"
 #| warning: true
 
 abc_1 <- expand.grid(
@@ -621,9 +639,25 @@ viridis_deu <- abc_1 %>%
   grid_theme +
   coord_fixed()
 
-wrap_plots(Red_green, Red_green_gs, Red_green_deu,
-  Rainbow1, Rainbow_gs, Rainbow_deu,
-  viridis_optionD, viridis_gs, viridis_deu,
+## empty
+
+empty <- abc_1 %>%
+  ggplot(aes(x = a, y = b)) +
+  geom_tile(aes(fill = c), alpha = 0) +
+  scale_fill_gradientn(colors = c("#FFFFFF00")) +
+  theme_classic() +
+  grid_theme +
+  coord_fixed() +
+  theme(
+    axis.text = element_text(color = "transparent"),
+    axis.title = element_text(color = "transparent"),
+    axis.ticks = element_line(color = "transparent"),
+    axis.line = element_line(color = "transparent")
+  )
+
+wrap_plots(Red_green, empty, empty,
+  Rainbow1, empty, empty,
+  empty, empty, empty,
   nrow = 3,
   ncol = 3
 )
@@ -632,11 +666,48 @@ wrap_plots(Red_green, Red_green_gs, Red_green_deu,
 - Red–green colorblindness: 8% males, 0.5% females (Northern European descent)
 :::
 
+## Rot/Grün- oder Regenbogen-Farbskalen 🌈
+
+```{r}
+#| warning: true
+
+wrap_plots(Red_green, Red_green_gs, empty,
+  Rainbow1, Rainbow_gs, empty,
+  empty, empty, empty,
+  nrow = 3,
+  ncol = 3
+)
+```
+
+## Rot/Grün- oder Regenbogen-Farbskalen 🌈
+
+```{r}
+#| warning: true
+
+wrap_plots(Red_green, Red_green_gs, Red_green_deu,
+  Rainbow1, Rainbow_gs, Rainbow_deu,
+  empty, empty, empty,
+  nrow = 3,
+  ncol = 3
+)
+```
+
+## ~~Rot/Grün- oder Regenbogen-Farbskalen 🌈~~ Viridis!
+
+```{r}
+#| warning: true
+
+wrap_plots(Red_green, Red_green_gs, Red_green_deu,
+  Rainbow1, Rainbow_gs, Rainbow_deu,
+  viridis_optionD, viridis_gs, viridis_deu,
+  nrow = 3,
+  ncol = 3
+)
+```
+
 ## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader}[Heatmaps ohne eine Adjustierung für Ausreißer]{.notThatSmallHeader}
 
 ```{r}
-#| echo: true
-#| code-fold: true
 #| label: fig-heatsandoutliers
 #| fig-cap: "Heatmaps mit Ausreißern"
 #| warning: false
@@ -739,8 +810,6 @@ wrap_plots(p1, p2, p4, p3,
 ## Bonus: Alternativen für Balkendiagramme
 
 ```{r}
-#| echo: true
-#| code-fold: true
 #| label: fig-barplotalternatives
 #| fig-cap: "Alternativen für Balkendiagramme: Lollipop-Plots und Treemaps"
 #| warning: false
@@ -773,6 +842,12 @@ treemap <- armsData[1:20, ] %>%
 
 lollipops + treemap
 ```
+
+## {.center}
+
+**Präsentation basierend auf**
+
+*Friends Don't Let Friends Make Bad Graphs* [@Li2023]
 
 ## Eingesetzte R Pakete {.smaller}
 
