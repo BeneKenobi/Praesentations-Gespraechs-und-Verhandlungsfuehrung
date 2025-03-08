@@ -1,10 +1,10 @@
 ---
-title: "Torten 🍰, Kerzen 🕯️, <br>Violinen 🎻 und Wälder 🌳"
+title: "Torten 🍰, Kerzen 🕯️,<br>Violinen 🎻, Wälder 🌳,<br>Regenbogen 🌈 und Hitze 🔥"
 lang: de
 execute:
   echo: false
 nocite: |
-  @Holtz, @Siirtola2019, @Few2007, @Nussbaumer2011, @Weissgerber2015
+  @Holtz, @Siirtola2019, @Few2007, @Nussbaumer2011, @Weissgerber2015, @Sheesley
 ---
 
 ## Torten 🍰 [Diagramme]{.smallHeader}
@@ -431,6 +431,7 @@ violin_eg <- data_set %>%
   ggplot(aes(x = Group, y = Wirkung)) +
   geom_violin(aes(fill = Group), trim = FALSE) +
   stat_summary(geom = "point", fun = median) +
+  ylim(-5, 6) +
   theme_classic() +
   theme(
     text = element_text(color = "black"),
@@ -451,13 +452,49 @@ violin_eg + plot_spacer() + plot_spacer()
 box_eg <- data_set %>%
     ggplot(aes(x = Group, y = Wirkung)) +
     geom_boxplot(aes(fill = Group)) +
+    ylim(-5, 6) +
     theme_classic() +
     theme(
         text = element_text(color = "black"),
         axis.text = element_text(color = "black"),
         panel.grid.major.y = element_line(color = "grey"),
         legend.position = "none",
-        axis.title.x = element_blank()
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank()
+    )
+
+violin_eg + box_eg + plot_spacer()
+```
+
+## ~~Violinen für kleine Stichproben 🎻~~  Boxplots? [~~Diagramme~~]{.smallHeader}
+
+```{r}
+#| warning: false
+
+violin_eg <- data_set %>%
+  ggplot(aes(x = Group, y = Wirkung)) +
+  geom_violin(aes(fill = Group), trim = TRUE) +
+  stat_summary(geom = "point", fun = median) +
+  theme_classic() +
+  theme(
+    text = element_text(color = "black"),
+    axis.text = element_text(color = "black"),
+    panel.grid.major.y = element_line(color = "grey"),
+    legend.position = "none",
+    axis.title.x = element_blank()
+  )
+
+box_eg <- data_set %>%
+    ggplot(aes(x = Group, y = Wirkung)) +
+    geom_boxplot(aes(fill = Group)) +
+    theme_classic() +
+    theme(
+        text = element_text(color = "black"),
+        axis.text = element_text(color = "black"),
+        panel.grid.major.y = element_line(color = "grey"),
+        legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank()
     )
 
 violin_eg + box_eg + plot_spacer()
@@ -471,8 +508,8 @@ violin_eg + box_eg + plot_spacer()
 jitter_eg <- data_set %>%
   ggplot(aes(x = Group, y = Wirkung)) +
   geom_point(aes(fill = Group),
-    shape = 21, size = 3, color = "black",
-    position = position_jitter(seed = 1, width = 0.2)
+    shape = 21, size = 4, color = "black",
+    position = position_jitter(seed = 6, width = 0.2)
   ) +
   theme_classic() +
   theme(
@@ -480,18 +517,17 @@ jitter_eg <- data_set %>%
     axis.text = element_text(color = "black"),
     panel.grid.major.y = element_line(color = "grey"),
     legend.position = "none",
-    axis.title.x = element_blank()
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
   )
 
 
 violin_eg + box_eg + jitter_eg
 ```
 
-## Balkendiagramm-Wäldern
+## Balken-Wälder 🌳 [Diagramm]{.smallHeader}
 
 ```{r}
-#| label: fig-barmeadows
-#| fig-cap: "Balkendiagramm für multifaktorielle Daten [@Sheesley]"
 #| warning: false
 sheesleyData <- read.csv("sheesley.csv") %>%
   mutate(
@@ -512,8 +548,9 @@ barmeadows <- sheesleyData %>%
     width = 0.1, size = 1
   ) +
   labs(
-    y = "Average number of welded lead wires missed per hour",
-    x = "Weld-Shift-Machine-Plant"
+    y = "Durchschnittliche Anzahl an Fehlern pro Stunde",
+    x = "Draht-Schicht-Maschine-Werk",
+    fill = "Schicht"
   ) +
   scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
   theme_classic() +
@@ -526,33 +563,36 @@ barmeadows <- sheesleyData %>%
 barmeadows
 ```
 
-## Balkendiagramm-Wäldern
+## ~~Balken-Wälder 🌳~~ Multi-Panel-Plots! [~~Diagramm~~]{.smallHeader}
 
 ```{r}
-#| label: fig-barmeadowsfixed
-#| fig-cap: "Multifaktorielle Daten als aufgeteilte Boxplots"
 #| warning: false
 
-Machine.labs <- c("Machine 1", "Machine 2")
+Machine.labs <- c("Maschine 1", "Maschine 2")
 names(Machine.labs) <- c("1", "2")
-Plant.labs <- c("Plant 1", "Plant 2")
+Plant.labs <- c("Werk 1", "Werk 2")
 names(Plant.labs) <- c("1", "2")
 
 dotsformultifactor <- sheesleyData %>%
-  ggplot(aes(x = Shift, y = Y)) +
-  facet_wrap(Machine ~ Plant, scales = "free_x", strip.position = "bottom", labeller = labeller(Machine = Machine.labs, Plant = Plant.labs)) +
-  geom_boxplot(aes(fill = Shift)) +
-  labs(
-    y = "Average number of welded lead wires missed per hour",
-  ) +
-  theme_classic() +
-  theme(
-    text = element_text(color = "black"),
-    axis.text = element_text(color = "black"),
-    strip.text.x = element_text(color = "black"),
-    strip.background = element_blank(),
-    strip.placement = "outside",
-  )
+    ggplot(aes(x = Shift, y = Y)) +
+    facet_wrap(Machine ~ Plant,
+        scales = "free_x", strip.position = "bottom",
+        labeller = labeller(Machine = Machine.labs, Plant = Plant.labs)
+    ) +
+    geom_boxplot(aes(fill = Shift)) +
+    labs(
+        y = "Durchschnittliche Anzahl an Fehlern pro Stunde",
+        fill = "Schicht"
+    ) +
+    theme_classic() +
+    theme(
+        text = element_text(color = "black"),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        strip.text.x = element_text(color = "black"),
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
 
 dotsformultifactor
 ```
@@ -750,11 +790,9 @@ wrap_plots(Red_green, Red_green_gs, Red_green_deu,
 )
 ```
 
-## [Nette Kolleginnen hindern ihre Kolleginnen an der Erstellung von ]{.smallHeader}[Heatmaps ohne eine Adjustierung für Ausreißer]{.notThatSmallHeader}
+## Heatmaps mit Ausreißern 🔥
 
 ```{r}
-#| label: fig-heatsandoutliers
-#| fig-cap: "Heatmaps mit Ausreißern"
 #| warning: false
 set.seed(2363)
 
@@ -778,54 +816,105 @@ p1 <- toydata %>%
   geom_tile(aes(fill = value)) +
   scale_fill_gradientn(colors = viridis(n = 10)) +
   labs(
-    x = "Observations",
-    y = "Features"
+    x = "Beobachtungen",
+    y = "Zeit in h",
+    fill = "Wirkung"
   ) +
   theme_classic() +
   coord_flip()
 
+wrap_plots(p1, plot_spacer(), plot_spacer(), plot_spacer(),
+  nrow = 2, ncol = 2,
+  widths = c(1, 0.7)
+)
+```
+
+## Heatmaps mit Ausreißern 🔥
+
+```{r}
+#| warning: false
+
 p2 <- toydata %>%
-  mutate(observation2 = fct_rev(observation2)) %>%
-  mutate(rank = rank(value, ties.method = "first")) %>%
-  ggplot(aes(x = value, y = rank)) +
-  geom_point(
-    shape = 21, color = "black",
-    aes(fill = value), size = 3
-  ) +
+  ggplot(aes(x = value, y = "")) +
+  geom_beeswarm(alpha = 1, size = 3, shape = 21, color = "black",
+                aes(fill = value), cex = 5, method = "swarm") +
   scale_fill_gradientn(colors = viridis(n = 10)) +
+  labs(
+    x = "Wirkung",
+  ) +
   theme_classic() +
   theme(
     legend.position = "none",
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+  )
+
+wrap_plots(p1, p2, plot_spacer(), plot_spacer(),
+  nrow = 2, ncol = 2,
+  widths = c(1, 0.7)
+)
+```
+
+## Heatmaps mit Ausreißern 🔥
+
+```{r}
+#| warning: false
+
+p2 <- toydata %>%
+    ggplot(aes(x = value, y = "")) +
+    geom_beeswarm(
+        alpha = 1, size = 3, shape = 21, color = "black",
+        aes(fill = value), cex = 5, method = "swarm"
+    ) +
+    scale_fill_gradientn(colors = viridis(n = 10)) +
+    geom_segment(aes(x = 6, xend = 9.5, y = 0.5, yend = 0.9),
+        lineend = "round", linejoin = "bevel",
+        arrow = arrow(length = unit(0.4, "cm")), color = "black", size = 1.2
+    ) +
+    labs(
+        x = "Wirkung",
+    ) +
+    theme_classic() +
+    theme(
+        legend.position = "none",
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()
+    )
+
+wrap_plots(p1, p2, plot_spacer(), plot_spacer(),
+    nrow = 2, ncol = 2,
+    widths = c(1, 0.7)
+)
+```
+
+## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
+
+```{r}
+#| warning: false
+
+p2 <- toydata %>%
+  ggplot(aes(x = value, y = "")) +
+  geom_beeswarm(alpha = 1, size = 3, shape = 21, color = "black",
+                aes(fill = value), cex = 5, method = "swarm") +
+  scale_fill_gradientn(colors = viridis(n = 10)) +
+  labs(
+    x = "Wirkung",
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
   )
 
 p3 <- toydata %>%
   mutate(observation2 = fct_rev(observation2)) %>%
-  mutate(rank = rank(value, ties.method = "first")) %>%
-  mutate(value2 = case_when(
-    value >= 2 ~ 2,
-    T ~ value
-  )) %>%
-  ggplot(aes(x = value, y = rank)) +
-  geom_point(
-    shape = 21, color = "black",
-    aes(fill = value2), size = 3
-  ) +
-  scale_fill_gradientn(
-    colors = viridis(n = 10),
-    breaks = c(0, 1, 2),
-    labels = c("0", "1", ">2")
-  ) +
-  labs(fill = "value") +
-  theme_classic() +
-  theme(
-    legend.position = "none",
-  )
-
-p4 <- toydata %>%
-  mutate(observation2 = fct_rev(observation2)) %>%
   mutate(value2 = case_when(
     value >= 1.5 ~ 2,
-    T ~ value
+    TRUE ~ value
   )) %>%
   ggplot(aes(x = observation2, y = feature)) +
   geom_tile(aes(fill = value2)) +
@@ -835,16 +924,106 @@ p4 <- toydata %>%
     labels = c("0", "1", ">2")
   ) +
   labs(
-    x = "Observations",
-    y = "Features",
-    fill = "value"
+    x = "Beobachtungen",
+    y = "Zeit in h",
+    fill = "Wirkung"
   ) +
   theme_classic() +
   coord_flip()
 
-wrap_plots(p1, p2, p4, p3,
-  nrow = 2, ncol = 2,
-  widths = c(1, 0.7)
+wrap_plots(p1, p2, p3, plot_spacer(),
+    nrow = 2, ncol = 2,
+    widths = c(1, 0.7)
+)
+```
+
+## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
+
+```{r}
+#| warning: false
+
+p3 <- toydata %>%
+  mutate(observation2 = fct_rev(observation2)) %>%
+  mutate(value2 = case_when(
+    value >= 1.5 ~ 2,
+    TRUE ~ value
+  )) %>%
+  ggplot(aes(x = observation2, y = feature)) +
+  geom_tile(aes(fill = value2)) +
+  scale_fill_gradientn(
+    colors = viridis(n = 10),
+    breaks = c(0, 1, 2),
+    labels = c("0", "1", ">2")
+  ) +
+  labs(
+    x = "Beobachtungen",
+    y = "Zeit in h",
+    fill = "Wirkung"
+  ) +
+  theme_classic() +
+  theme(legend.background = element_rect(color = "black", fill = NA, size = 1.2)) +
+  coord_flip()
+
+wrap_plots(p1, p2, p3, plot_spacer(),
+    nrow = 2, ncol = 2,
+    widths = c(1, 0.7)
+)
+```
+
+## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
+
+```{r}
+#| warning: false
+
+p3 <- toydata %>%
+  mutate(observation2 = fct_rev(observation2)) %>%
+  mutate(value2 = case_when(
+    value >= 1.5 ~ 2,
+    TRUE ~ value
+  )) %>%
+  ggplot(aes(x = observation2, y = feature)) +
+  geom_tile(aes(fill = value2)) +
+  scale_fill_gradientn(
+    colors = viridis(n = 10),
+    breaks = c(0, 1, 2),
+    labels = c("0", "1", ">2")
+  ) +
+  labs(
+    x = "Beobachtungen",
+    y = "Zeit in h",
+    fill = "Wirkung"
+  ) +
+  theme_classic() +
+  coord_flip()
+
+
+p4 <- toydata %>%
+    mutate(value2 = case_when(
+        value >= 2 ~ 2,
+        T ~ value
+    )) %>%
+        ggplot(aes(x = value, y = "")) +
+    geom_beeswarm(
+        alpha = 1, size = 3, shape = 21, color = "black",
+        aes(fill = value2), cex = 5, method = "swarm"
+    ) +
+    scale_fill_gradientn(
+        colors = viridis(n = 10),
+        breaks = c(0, 1, 2),
+        labels = c("0", "1", ">2")
+    ) +
+    labs(x = "Wirkung") +
+    theme_classic() +
+    theme(
+        legend.position = "none",
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()
+    )
+
+wrap_plots(p1, p2, p3, p4,
+    nrow = 2, ncol = 2,
+    widths = c(1, 0.7)
 )
 ```
 
@@ -852,48 +1031,92 @@ wrap_plots(p1, p2, p4, p3,
 95% quantile = 1.723745
 :::
 
-## Bonus: Alternativen für Balkendiagramme
+## Bonus: Alternativen für Balkendiagramme: Lollipop-Plot 🍭
 
 ```{r}
-#| label: fig-barplotalternatives
-#| fig-cap: "Alternativen für Balkendiagramme: Lollipop-Plots und Treemaps"
 #| warning: false
 
 # total = 31983
 armsData <- read.csv("arms_supplier_2022.csv") %>%
   mutate(Supplier = as.factor(Supplier)) %>%
-  mutate(Percentage = TIV_2022 / 31983)
+  mutate(Percentage = TIV_2022 / 31983) %>%
+  arrange(desc(Percentage))
 
 lollipops <- armsData[1:20, ] %>%
   ggplot(aes(x = reorder(Supplier, Percentage), y = Percentage)) +
   geom_segment(aes(xend = Supplier, yend = 0), color = "darkgrey") +
   scale_y_continuous(labels = scales::percent, expand = expand_scale(mult = c(0, 0.1))) +
-  geom_point(size = 4, color = palette.colors(palette = "Okabe-Ito")[1]) +
+  geom_point(size = 4, color = palette.colors(palette = "Okabe-Ito")[2]) +
   theme_classic() +
   theme(
     panel.grid.major.x = element_line(color = "lightgrey"),
     panel.grid.minor.x = element_line(color = "lightgrey"),
     axis.title.y = element_blank()
   ) +
-  labs(x = "Supplier", y = "Percentage of arms supplied in 2022") +
+  ylab("Waffenlieferungen in 2022") +
   coord_flip()
+
+lollipops
+```
+
+## Bonus: Alternativen für Balkendiagramme: Treemap 🗺️
+
+```{r}
+#| warning: false
 
 treemap <- armsData[1:20, ] %>%
   ggplot(aes(area = Percentage, fill = Supplier, label = Supplier)) +
   geom_treemap(start = "topleft") +
   geom_treemap_text(color = "white", place = "centre", reflow = TRUE, start = "topleft") +
-  scale_fill_manual(values = rep(palette.colors(palette = "Okabe-Ito"), 20))
+  xlab("Waffenlieferungen in 2022") +
+  scale_fill_manual(values = palette.colors(23, palette = "Okabe-Ito", recycle = TRUE))
 
-lollipops + treemap
+treemap
 ```
 
-## {.center}
+## Zusammenfassung 📦
+
+::: {.r-fit-text .center}
+::: {.fragment .fade-up}
+🍰 Torten lieber weglassen!
+:::
+
+::: {.fragment .fade-up}
+🕯️ Kerzen ebenso!
+:::
+
+::: {.fragment .fade-up}
+🎻 Vorsicht bei Violinen!
+:::
+
+::: {.fragment .fade-up}
+🌳 Wälder meiden!
+:::
+
+::: {.fragment .fade-up}
+🌈 Regenbogen sehen nicht für alle gut aus!
+:::
+
+::: {.fragment .fade-up}
+🔥 Hitze dosieren!
+:::
+
+::: {.fragment .fade-up}
+🍭 🗺️ Lollis und Karten können Alternativen sein!
+:::
+:::
+
+## {.center visibility="uncounted" .unnumbered .unlisted}
 
 **Präsentation basierend auf**
 
 *Friends Don't Let Friends Make Bad Graphs* [@Li2023]
 
-## Eingesetzte R Pakete {.smaller}
+[---]{}
+
+R-Quellcode verfügbar auf ![](images/github-mark.svg){height=1em .bottom} GitHub
+
+## Eingesetzte R Pakete {.smaller visibility="uncounted" .unnumbered .unlisted}
 
 ```{r}
 cite_packages(output = "table", out.dir = ".") %>%
