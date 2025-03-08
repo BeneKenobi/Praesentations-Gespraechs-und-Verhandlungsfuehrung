@@ -1,10 +1,10 @@
 ---
-title: "Torten 🍰 und Kerzen 🕯️"
+title: "Torten 🍰, Kerzen 🕯️, <br>Violinen 🎻 und Wälder 🌳"
 lang: de
 execute:
   echo: false
 nocite: |
-  @Holtz, @Siirtola2019, @Few2007, @Nussbaumer2011
+  @Holtz, @Siirtola2019, @Few2007, @Nussbaumer2011, @Weissgerber2015
 ---
 
 ## Torten 🍰 [Diagramme]{.smallHeader}
@@ -20,20 +20,6 @@ library(grateful)
 library(prismatic)
 library(treemapify)
 
-bene_colors <- c(
-  "#47476b",
-  "#cda715",
-  "#318986",
-  "#93003a",
-  "#3081ad",
-  "#6d3d3d",
-  "#79779f",
-  "#00c1bf",
-  "#777586"
-)
-bene_palette <- scale_fill_manual(values = bene_colors, breaks = waiver())
-bene_palette_shifted <- scale_fill_manual(values = bene_colors[-1], breaks = waiver())
-
 patchwork_defaults <- plot_annotation(theme = theme(plot.background = element_rect(fill = "transparent", colour = NA)))
 
 theme_set(theme_minimal() +
@@ -44,7 +30,7 @@ theme_set(theme_minimal() +
     axis.text = element_blank(),
     legend.margin = unit(0, "null"),
     panel.background = element_rect(fill = "transparent", colour = NA),
-    plot.background = element_rect(fill = "transparent", colour = NA)
+    plot.background = element_rect(fill = "transparent", colour = NA),
   ))
 
 margin_spacer <- function(x) {
@@ -54,6 +40,14 @@ margin_spacer <- function(x) {
   } else {
     return(0)
   }
+}
+
+scale_colour_discrete <- function(...) {
+  scale_colour_manual(..., values = palette.colors(palette = "Okabe-Ito")[-1])
+}
+
+scale_fill_discrete <- function(...) {
+  scale_fill_manual(..., values = palette.colors(palette = "Okabe-Ito")[-1])
 }
 ```
 
@@ -78,8 +72,7 @@ plot_pie <- function(data) {
   ggplot(data, aes(x = "name", y = value, fill = name)) +
     geom_bar(width = 1, stat = "identity") +
     coord_polar("y", start = 0, direction = -1) +
-    bene_palette_shifted +
-    geom_text(aes(label = name), position = position_stack(vjust = 0.5), color = "white") +
+    geom_text(aes(label = name), position = position_stack(vjust = 0.5)) +
     xlab("") +
     ylab("")
 }
@@ -105,14 +98,14 @@ plot_pie_empty <- function(data) {
 
 # Modified pie chart with specific colors greyed out
 plot_pie_partial_gray <- function(data, grey_positions) {
-  colors_modified <- bene_colors[-1]
+  colors_modified <- palette.colors(palette = "Okabe-Ito")[-1]
   colors_modified[grey_positions] <- sapply(colors_modified[grey_positions], to_grey_scale)
   
   ggplot(data, aes(x = "name", y = value, fill = name)) +
     geom_bar(width = 1, stat = "identity") +
     coord_polar("y", start = 0, direction = -1) +
     scale_fill_manual(values = colors_modified, breaks = waiver()) +
-    geom_text(aes(label = name), position = position_stack(vjust = 0.5), color = "white") +
+    geom_text(aes(label = name), position = position_stack(vjust = 0.5)) +
     xlab("") +
     ylab("")
 }
@@ -194,8 +187,7 @@ a + b + c + patchwork_defaults
 plot_bar <- function(data) {
   ggplot(data, aes(x = name, y = value, fill = name)) +
     geom_bar(stat = "identity", color = "black") +
-    bene_palette_shifted +
-    geom_text(aes(label = name), position = position_stack(reverse = TRUE), vjust = 1.5, color = "white") +
+    geom_text(aes(label = name), position = position_stack(reverse = TRUE), vjust = 1.5) +
     ylim(0, 25) +
     xlab("") +
     ylab("")
@@ -227,17 +219,11 @@ a + b + c + d + e + f + plot_layout(design = layout) + patchwork_defaults
 - Balken sind viel leichter zu schätzen und zu vergleichen, nur eine Dimension
 :::
 
-## Balkendiagramme für Mittelwerte [@Weissgerber2015]
+## Balken für Mittelwerte 🕯️ [Diagramme]{.smallHeader}
 
 ```{r}
-#| label: fig-meansseparationbar
-#| fig-cap: "Balkendiagramme für Mittelwerte"
 #| warning: false
 
-bene_palette_shifted <- scale_fill_manual(values = bene_colors[-1], breaks = waiver())
-
-# group1 is sampled from a normal distribution with mean = 1 and sd = 1.
-# group2 is sampled from a lognormal distribution with mean = 1 and sd = 1.
 set.seed(2363)
 group1 <- rnorm(n = 250, mean = 1, sd = 1)
 group2 <- rlnorm(
@@ -251,7 +237,8 @@ groups_long <- cbind(
   group2
 ) %>%
   as.data.frame() %>%
-  gather("group", "response", 1:2)
+  gather("group", "response", 1:2) %>%
+  mutate(group = recode(group, group1 = "Gruppe 1", group2 = "Gruppe 2"))
 
 bar <- groups_long %>%
   ggplot(aes(x = group, y = response)) +
@@ -261,7 +248,6 @@ bar <- groups_long %>%
     width = 0.1, size = 1
   ) +
   scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
-  bene_palette_shifted +
   theme_classic() +
   theme(
     text = element_text(color = "black"),
@@ -275,35 +261,51 @@ bar <- groups_long %>%
     axis.title.x = element_blank()
   ) +
   labs(
-    x = "Group",
-    y = "Response"
-  ) +
-  ggtitle(
-    paste0(
-      "group1: mean = ", signif(mean(group1), 2),
-      "; sd = ", signif(sd(group1), 2), "\n",
-      "group2: mean = ", signif(mean(group2), 2),
-      "; sd = ", signif(sd(group2), 2)
-    )
+    y = "Wirkung"
   )
 
-bar
+bar + plot_spacer() + plot_spacer() + patchwork_defaults
 ```
 
-## Balkendiagrammen für Mittelwerte
+## ~~Balken für Mittelwerte 🕯️~~ Boxplots! [~~Diagramme~~]{.smallHeader}
 
 ```{r}
-#| label: fig-meansseparationall
-#| fig-cap: "Alternativen: Boxplots und Beeswarm-Plots"
 #| warning: false
 
 box <- groups_long %>%
+    ggplot(aes(x = group, y = response)) +
+    geom_boxplot(aes(fill = group), width = 0.5) +
+    theme_classic() +
+    theme(
+        text = element_text(color = "black"),
+        axis.text = element_text(color = "black"),
+        legend.position = "none",
+        plot.title = element_text(size = 10),
+        plot.caption = element_text(hjust = 0),
+        axis.line.x = element_line(color = "black"),
+        axis.line.y = element_line(color = "black"),
+        panel.grid.major.y = element_line(color = "grey"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank()
+    ) +
+  ylim(-2, 6)
+
+bar + box + plot_spacer() + patchwork_defaults
+```
+
+## ~~Balken für Mittelwerte 🕯️~~ Boxplots! [~~Diagramme~~]{.smallHeader}
+
+```{r}
+#| warning: false
+
+bar <- groups_long %>%
   ggplot(aes(x = group, y = response)) +
-  geom_boxplot(aes(fill = group), width = 0.5) +
-  labs(
-    y = "Response"
+  geom_bar(stat = "summary", fun = mean, aes(fill = group), width = 0.5, colour = "black") +
+  stat_summary(
+    geom = "errorbar", fun.data = "mean_se",
+    width = 0.1, size = 1
   ) +
-  bene_palette_shifted +
+  scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
   theme_classic() +
   theme(
     text = element_text(color = "black"),
@@ -316,23 +318,74 @@ box <- groups_long %>%
     panel.grid.major.y = element_line(color = "grey"),
     axis.title.x = element_blank()
   ) +
-  ggtitle(
-    paste0(
-      "group1: median = ", signif(median(group1), 2),
-      "; IQR = ", signif(IQR(group1), 2), "\n",
-      "group2: median = ", signif(median(group2), 2),
-      "; IQR = ", signif(IQR(group2), 2)
-    )
-  )
+  labs(
+    y = "Wirkung"
+  ) +
+  ylim(-2, 6)
+
+box <- groups_long %>%
+    ggplot(aes(x = group, y = response)) +
+    geom_boxplot(aes(fill = group), width = 0.5) +
+    theme_classic() +
+    theme(
+        text = element_text(color = "black"),
+        axis.text = element_text(color = "black"),
+        legend.position = "none",
+        plot.title = element_text(size = 10),
+        plot.caption = element_text(hjust = 0),
+        axis.line.x = element_line(color = "black"),
+        axis.line.y = element_line(color = "black"),
+        panel.grid.major.y = element_line(color = "grey"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank()
+    ) +
+  ylim(-2, 6)
+
+bar + box + plot_spacer() + patchwork_defaults
+```
+
+## ~~Balken für Mittelwerte 🕯️~~ Boxplots! [~~Diagramme~~]{.smallHeader}
+
+```{r}
+#| warning: false
+
+box <- groups_long %>%
+    ggplot(aes(x = group, y = response)) +
+    geom_boxplot(aes(fill = group), width = 0.5) +
+    geom_segment(aes(x = 1.4, xend = 1.05, y = max(groups_long$response[groups_long$group == "Gruppe 1"]) - 1.75, yend = max(groups_long$response[groups_long$group == "Gruppe 1"]) - 0.1),
+        lineend = "round", linejoin = "bevel",
+        arrow = arrow(length = unit(0.4, "cm")), color = palette.colors(palette = "Okabe-Ito")[2], size = 1.2
+    ) +
+    geom_segment(aes(x = 1.6, xend = 1.95, y = max(groups_long$response[groups_long$group == "Gruppe 2"]) - 1.75, yend = max(groups_long$response[groups_long$group == "Gruppe 2"]) - 0.1),
+        lineend = "round", linejoin = "bevel",
+        arrow = arrow(length = unit(0.4, "cm")), color = palette.colors(palette = "Okabe-Ito")[3], size = 1.2
+    ) +
+    theme_classic() +
+    theme(
+        text = element_text(color = "black"),
+        axis.text = element_text(color = "black"),
+        legend.position = "none",
+        plot.title = element_text(size = 10),
+        plot.caption = element_text(hjust = 0),
+        axis.line.x = element_line(color = "black"),
+        axis.line.y = element_line(color = "black"),
+        panel.grid.major.y = element_line(color = "grey"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank()
+    ) +
+  ylim(-2, 6)
+
+bar + box + plot_spacer() + patchwork_defaults
+```
+
+## ~~Balken für Mittelwerte 🕯️~~ Beeswarm! [~~Diagramme~~]{.smallHeader}
+
+```{r}
+#| warning: false
 
 beeswarm <- groups_long %>%
   ggplot(aes(x = group, y = response)) +
   geom_beeswarm(alpha = 0.8, size = 2, shape = 21, color = "black", aes(fill = group), cex = 1.7, method = "compactswarm") +
-  bene_palette_shifted +
-  labs(
-    x = "Group",
-    y = "Response"
-  ) +
   theme_classic() +
   theme(
     text = element_text(color = "black"),
@@ -343,16 +396,10 @@ beeswarm <- groups_long %>%
     axis.line.x = element_line(color = "black"),
     axis.line.y = element_line(color = "black"),
     panel.grid.major.y = element_line(color = "grey"),
-    axis.title.x = element_blank()
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
   ) +
-  ggtitle(
-    paste0(
-      "group1: median = ", signif(median(group1), 2),
-      "; IQR = ", signif(IQR(group1), 2), "\n",
-      "group2: median = ", signif(median(group2), 2),
-      "; IQR = ", signif(IQR(group2), 2)
-    )
-  )
+  ylim(-2, 6)
 
 bar + box + beeswarm + patchwork_defaults
 ```
@@ -361,9 +408,11 @@ bar + box + beeswarm + patchwork_defaults
 - Box Plots show the median and the interquartile range (IQR) of the data
   - Whiskers are min and max OR 1.5 * IQR
   - Points are outliers
+- group1 is sampled from a normal distribution with mean = 1 and sd = 1.
+- group2 is sampled from a lognormal distribution with mean = 1 and sd = 1.
 :::
 
-## Violinplots für kleine Stichproben 🎻
+## Violinen für kleine Stichproben 🎻 [Diagramme]{.smallHeader}
 
 ```{r}
 #| warning: false
@@ -374,14 +423,14 @@ set.seed(666)
 
 data_set <- replicate(rnorm(5, mean = 1, sd = 1), n = 3, simplify = T) %>%
   as.data.frame() %>%
-  gather("sample", "Response", 1:3) %>%
-  mutate(Group = str_replace(sample, "V", "group"))
+  gather("sample", "Wirkung", 1:3) %>%
+  mutate(Group = str_replace(sample, "V", "group")) %>%
+  mutate(Group = recode(Group, group1 = "Gruppe 1", group2 = "Gruppe 2", group3 = "Gruppe 3"))
 
 violin_eg <- data_set %>%
-  ggplot(aes(x = Group, y = Response)) +
+  ggplot(aes(x = Group, y = Wirkung)) +
   geom_violin(aes(fill = Group), trim = FALSE) +
   stat_summary(geom = "point", fun = median) +
-  bene_palette_shifted +
   theme_classic() +
   theme(
     text = element_text(color = "black"),
@@ -394,39 +443,37 @@ violin_eg <- data_set %>%
 violin_eg + plot_spacer() + plot_spacer()
 ```
 
-## Violinplots für kleine Stichproben 🎻
+## ~~Violinen für kleine Stichproben 🎻~~ Boxplots? [~~Diagramme~~]{.smallHeader}
 
 ```{r}
 #| warning: false
 
 box_eg <- data_set %>%
-  ggplot(aes(x = Group, y = Response)) +
-  geom_boxplot(aes(fill = Group)) +
-  bene_palette_shifted +
-  theme_classic() +
-  theme(
-    text = element_text(color = "black"),
-    axis.text = element_text(color = "black"),
-    panel.grid.major.y = element_line(color = "grey"),
-    legend.position = "none",
-    axis.title.x = element_blank()
-  )
+    ggplot(aes(x = Group, y = Wirkung)) +
+    geom_boxplot(aes(fill = Group)) +
+    theme_classic() +
+    theme(
+        text = element_text(color = "black"),
+        axis.text = element_text(color = "black"),
+        panel.grid.major.y = element_line(color = "grey"),
+        legend.position = "none",
+        axis.title.x = element_blank()
+    )
 
 violin_eg + box_eg + plot_spacer()
 ```
 
-## ~~Violinplots für kleine Stichproben 🎻~~ Jitterplots!
+## ~~Violinen für kleine Stichproben 🎻~~  ~~Boxplots~~ Jitterplots! [~~Diagramme~~]{.smallHeader}
 
 ```{r}
 #| warning: false
 
 jitter_eg <- data_set %>%
-  ggplot(aes(x = Group, y = Response)) +
+  ggplot(aes(x = Group, y = Wirkung)) +
   geom_point(aes(fill = Group),
     shape = 21, size = 3, color = "black",
     position = position_jitter(seed = 1, width = 0.2)
   ) +
-  bene_palette_shifted +
   theme_classic() +
   theme(
     text = element_text(color = "black"),
@@ -469,7 +516,6 @@ barmeadows <- sheesleyData %>%
     x = "Weld-Shift-Machine-Plant"
   ) +
   scale_y_continuous(expand = expand_scale(mult = c(0, 0.1))) +
-  bene_palette_shifted +
   theme_classic() +
   theme(
     text = element_text(color = "black"),
@@ -496,7 +542,6 @@ dotsformultifactor <- sheesleyData %>%
   ggplot(aes(x = Shift, y = Y)) +
   facet_wrap(Machine ~ Plant, scales = "free_x", strip.position = "bottom", labeller = labeller(Machine = Machine.labs, Plant = Plant.labs)) +
   geom_boxplot(aes(fill = Shift)) +
-  bene_palette_shifted +
   labs(
     y = "Average number of welded lead wires missed per hour",
   ) +
@@ -823,8 +868,7 @@ lollipops <- armsData[1:20, ] %>%
   ggplot(aes(x = reorder(Supplier, Percentage), y = Percentage)) +
   geom_segment(aes(xend = Supplier, yend = 0), color = "darkgrey") +
   scale_y_continuous(labels = scales::percent, expand = expand_scale(mult = c(0, 0.1))) +
-  geom_point(size = 4, color = bene_colors[1]) +
-  bene_palette_shifted +
+  geom_point(size = 4, color = palette.colors(palette = "Okabe-Ito")[1]) +
   theme_classic() +
   theme(
     panel.grid.major.x = element_line(color = "lightgrey"),
@@ -838,7 +882,7 @@ treemap <- armsData[1:20, ] %>%
   ggplot(aes(area = Percentage, fill = Supplier, label = Supplier)) +
   geom_treemap(start = "topleft") +
   geom_treemap_text(color = "white", place = "centre", reflow = TRUE, start = "topleft") +
-  scale_fill_manual(values = rep(bene_colors, 20))
+  scale_fill_manual(values = rep(palette.colors(palette = "Okabe-Ito"), 20))
 
 lollipops + treemap
 ```
