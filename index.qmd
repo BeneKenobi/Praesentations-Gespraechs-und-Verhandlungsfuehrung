@@ -963,7 +963,7 @@ wrap_plots(p1, p2, plot_spacer(), plot_spacer(),
 - Zwei Ausreißer!
 :::
 
-## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
+## Heatmaps mit Ausreißern 🔥 Skala anpassen!
 
 ```{r}
 #| warning: false
@@ -1015,7 +1015,7 @@ wrap_plots(p1, p2, p3, plot_spacer(),
 - Neue Heatmap: mehr Unterscheidung möglich! Aber wie?
 :::
 
-## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
+## Heatmaps mit Ausreißern 🔥 Skala anpassen!
 
 ```{r}
 #| warning: false
@@ -1052,7 +1052,7 @@ wrap_plots(p1, p2, p3, plot_spacer(),
 - Skala angepasst!
 :::
 
-## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
+## Heatmaps mit Ausreißern 🔥 Skala anpassen!
 
 ```{r}
 #| warning: false
