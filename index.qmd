@@ -309,7 +309,7 @@ box <- groups_long %>%
 bar + box + plot_spacer() + patchwork_defaults
 ```
 ::: {.notes}
-- Sieht erstmal wie zwei verschiedene Duiagramme aus: hier täuscht die Skala auf der Y-Achse! Passen wir die also an, ...
+- Sieht erstmal wie zwei verschiedene Diagramme aus: hier täuscht die Skala auf der Y-Achse! Passen wir die also an, ...
 :::
 
 ## ~~Balken für Mittelwerte 🕯️~~ Boxplots! [~~Diagramme~~]{.smallHeader}
@@ -432,7 +432,7 @@ bar + box + beeswarm + patchwork_defaults
 ```
 
 ::: {.notes}
-- Beeswarm zeigt das deutliochste Bild
+- Beeswarm zeigt das deutlichstes Bild
 - Für Statistiknerds: Gruppe 1 ist normalverteilt, Gruppe 2 logarithmisch-normalverteilt.
 :::
 
@@ -469,7 +469,7 @@ violin_eg + plot_spacer() + plot_spacer()
 ```
 
 ::: {.notes}
-- Violinendiagramme, eine abwandlung der Boxplots soll Verteilungen besser darstellen, aber : Vorsicht bei kleinen Stichproben! Weil...
+- Violinendiagramme, eine Abwandlung der Boxplots, sollen Verteilungen besser darstellen, aber: Vorsicht bei kleinen Stichproben! Weil...
 :::
 
 ## ~~Violinen für kleine Stichproben 🎻~~ Boxplots? [~~Diagramme~~]{.smallHeader}
@@ -605,6 +605,9 @@ barmeadows <- sheesleyData %>%
 
 barmeadows
 ```
+::: {.notes}
+- Massen an Balken, zu viele Werte und Dimensionen gleichzeitig
+:::
 
 ## ~~Balken-Wälder 🌳~~ Multi-Panel-Plots! [~~Diagramm~~]{.smallHeader}
 
@@ -639,6 +642,11 @@ dotsformultifactor <- sheesleyData %>%
 
 dotsformultifactor
 ```
+
+::: {.notes}
+- Aufteilung in weniger Plots, sortiert nach Maschine und Werk sorgt für mehr Ordnung
+- Dimension "Draht" ignoriert
+:::
 
 ## Rot/Grün- oder Regenbogen-Farbskalen 🌈
 
@@ -791,7 +799,7 @@ wrap_plots(Red_green, empty, empty,
 )
 ```
 ::: {.notes}
-- Red–green colorblindness: 8% males, 0.5% females (Northern European descent)
+
 :::
 
 ## Rot/Grün- oder Regenbogen-Farbskalen 🌈
@@ -806,6 +814,9 @@ wrap_plots(Red_green, Red_green_gs, empty,
   ncol = 3
 )
 ```
+::: {.notes}
+- Probleme beim drucken in schwarz-weiß, auch manche Publikationen verlangen für Farbe mehr Geld
+:::
 
 ## Rot/Grün- oder Regenbogen-Farbskalen 🌈
 
@@ -819,6 +830,9 @@ wrap_plots(Red_green, Red_green_gs, Red_green_deu,
   ncol = 3
 )
 ```
+::: {.notes}
+- Rot-Grün-Farbenblind: 8% Männer, 0.5% Frauen (Nordeuropäische Abstammung)
+:::
 
 ## ~~Rot/Grün- oder Regenbogen-Farbskalen 🌈~~ Viridis!
 
@@ -832,6 +846,11 @@ wrap_plots(Red_green, Red_green_gs, Red_green_deu,
   ncol = 3
 )
 ```
+
+::: {.notes}
+- Viridis ist eine Farbpalette, die speziell für wissenschaftliche Zwecke entwickelt wurde und für Farbenblinde geeignet ist
+- Die Farben sind so gewählt, dass sie auch in schwarz-weiß gut erkennbar sind
+:::
 
 ## Heatmaps mit Ausreißern 🔥
 
@@ -872,6 +891,10 @@ wrap_plots(p1, plot_spacer(), plot_spacer(), plot_spacer(),
 )
 ```
 
+::: {.notes}
+- Viridis, aber trotzdem kaum Unterscheidung zwischen den Beobachtungen, außer zwei am Ende
+:::
+
 ## Heatmaps mit Ausreißern 🔥
 
 ```{r}
@@ -898,6 +921,10 @@ wrap_plots(p1, p2, plot_spacer(), plot_spacer(),
   widths = c(1, 0.7)
 )
 ```
+
+::: {.notes}
+- Einfach alle Plotten, dann sieht man...
+:::
 
 ## Heatmaps mit Ausreißern 🔥
 
@@ -932,6 +959,10 @@ wrap_plots(p1, p2, plot_spacer(), plot_spacer(),
 )
 ```
 
+::: {.notes}
+- Zwei Ausreißer!
+:::
+
 ## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
 
 ```{r}
@@ -980,6 +1011,10 @@ wrap_plots(p1, p2, p3, plot_spacer(),
 )
 ```
 
+::: {.notes}
+- Neue Heatmap: mehr Unterscheidung möglich! Aber wie?
+:::
+
 ## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
 
 ```{r}
@@ -1012,6 +1047,10 @@ wrap_plots(p1, p2, p3, plot_spacer(),
     widths = c(1, 0.7)
 )
 ```
+
+::: {.notes}
+- Skala angepasst!
+:::
 
 ## Heatmaps mit Ausreißern 🔥 Sakala anpassen!
 
@@ -1071,7 +1110,8 @@ wrap_plots(p1, p2, p3, p4,
 ```
 
 ::: {.notes}
-95% quantile = 1.723745
+- Alles über 2 gleiche Farbe
+- 95% quantile ca. 1.7
 :::
 
 ## Bonus: Alternativen für Balkendiagramme: Lollipop-Plot 🍭
@@ -1102,6 +1142,10 @@ lollipops <- armsData[1:20, ] %>%
 lollipops
 ```
 
+::: {.notes}
+- Lollipops wirken weniger wuchtig, gleiche Informationen wie Balken aber weniger Platz
+:::
+
 ## Bonus: Alternativen für Balkendiagramme: Treemap 🗺️
 
 ```{r}
@@ -1116,6 +1160,9 @@ treemap <- armsData[1:20, ] %>%
 
 treemap
 ```
+::: {.notes}
+- Treemap nutzt wieder Flächen, von denen wir am Anfang ja gelernt haben dass sie nicht so gut sind, aber um ein Bild zu erzeugen ist es okay
+:::
 
 ## Zusammenfassung 📦
 
