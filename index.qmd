@@ -51,6 +51,10 @@ scale_fill_discrete <- function(...) {
 }
 ```
 
+::: {.notes}
+
+:::
+
 ```{r}
 #| warning: false
 
@@ -117,9 +121,8 @@ a + b + c + patchwork_defaults
 ```
 
 ::: {.notes}
-- Flächen sind schwer zu schätzen und zu vergleichen
-- Winkel sind noch schwerer zu schätzen und zu vergleichen
-- Länge ist am einfachsten zu schätzen und zu vergleichen
+- Sorry, keine Torten
+- Sehen sie einen Unterschied?
 :::
 
 ## Torten 🍰 [Diagramme]{.smallHeader}
@@ -177,6 +180,12 @@ c <- plot_pie(data3)
 a + b + c + patchwork_defaults
 ```
 
+::: {.notes}
+- Schlecht im Schätzen von Winkeln
+- Schlecht im Vergleichen von Flächen
+- Wodrin nicht schlecht: Entfernungen vergleichen!
+:::
+
 ## ~~Torten 🍰~~ Balken! [Diagramme]{.smallHeader}
 
 ```{r}
@@ -217,6 +226,7 @@ a + b + c + d + e + f + plot_layout(design = layout) + patchwork_defaults
 
 ::: {.notes}
 - Balken sind viel leichter zu schätzen und zu vergleichen, nur eine Dimension
+- Aber sind Balken wirklich immer besser?
 :::
 
 ## Balken für Mittelwerte 🕯️ [Diagramme]{.smallHeader}
@@ -267,6 +277,12 @@ bar <- groups_long %>%
 bar + plot_spacer() + plot_spacer() + patchwork_defaults
 ```
 
+::: {.notes}
+- Balken mit der Wirkung eines Medikaments in zwei Gruppen
+- Fehlerbalken zeigen Standardfehler des Mittelwerts
+- Warum das keine gut Idee ist zeigt...
+:::
+
 ## ~~Balken für Mittelwerte 🕯️~~ Boxplots! [~~Diagramme~~]{.smallHeader}
 
 ```{r}
@@ -292,6 +308,9 @@ box <- groups_long %>%
 
 bar + box + plot_spacer() + patchwork_defaults
 ```
+::: {.notes}
+- Sieht erstmal wie zwei verschiedene Duiagramme aus: hier täuscht die Skala auf der Y-Achse! Passen wir die also an, ...
+:::
 
 ## ~~Balken für Mittelwerte 🕯️~~ Boxplots! [~~Diagramme~~]{.smallHeader}
 
@@ -344,6 +363,10 @@ box <- groups_long %>%
 bar + box + plot_spacer() + patchwork_defaults
 ```
 
+::: {.notes}
+- ...erkennt man direkt wie die Balken die Daten verzerren.
+:::
+
 ## ~~Balken für Mittelwerte 🕯️~~ Boxplots! [~~Diagramme~~]{.smallHeader}
 
 ```{r}
@@ -378,6 +401,10 @@ box <- groups_long %>%
 bar + box + plot_spacer() + patchwork_defaults
 ```
 
+::: {.notes}
+- Boxplots zeigen gut auch Ausreißer
+:::
+
 ## ~~Balken für Mittelwerte 🕯️~~ Beeswarm! [~~Diagramme~~]{.smallHeader}
 
 ```{r}
@@ -405,11 +432,8 @@ bar + box + beeswarm + patchwork_defaults
 ```
 
 ::: {.notes}
-- Box Plots show the median and the interquartile range (IQR) of the data
-  - Whiskers are min and max OR 1.5 * IQR
-  - Points are outliers
-- group1 is sampled from a normal distribution with mean = 1 and sd = 1.
-- group2 is sampled from a lognormal distribution with mean = 1 and sd = 1.
+- Beeswarm zeigt das deutliochste Bild
+- Für Statistiknerds: Gruppe 1 ist normalverteilt, Gruppe 2 logarithmisch-normalverteilt.
 :::
 
 ## Violinen für kleine Stichproben 🎻 [Diagramme]{.smallHeader}
@@ -444,6 +468,10 @@ violin_eg <- data_set %>%
 violin_eg + plot_spacer() + plot_spacer()
 ```
 
+::: {.notes}
+- Violinendiagramme, eine abwandlung der Boxplots soll Verteilungen besser darstellen, aber : Vorsicht bei kleinen Stichproben! Weil...
+:::
+
 ## ~~Violinen für kleine Stichproben 🎻~~ Boxplots? [~~Diagramme~~]{.smallHeader}
 
 ```{r}
@@ -465,6 +493,10 @@ box_eg <- data_set %>%
 
 violin_eg + box_eg + plot_spacer()
 ```
+
+::: {.notes}
+- Hier die Darstellung als Boxplots. Die Enden früher? Warum?
+:::
 
 ## ~~Violinen für kleine Stichproben 🎻~~  Boxplots? [~~Diagramme~~]{.smallHeader}
 
@@ -500,6 +532,11 @@ box_eg <- data_set %>%
 violin_eg + box_eg + plot_spacer()
 ```
 
+::: {.notes}
+- Violinplots verzerren durch Kurven die wahre Verteilung, so sieht es aus wenn das Diagramm dort Endet wo auch die maximalen und minimalen Werte liegen
+- Aber die Realität sieht noch anders aus...
+:::
+
 ## ~~Violinen für kleine Stichproben 🎻~~  ~~Boxplots~~ Jitterplots! [~~Diagramme~~]{.smallHeader}
 
 ```{r}
@@ -524,6 +561,12 @@ jitter_eg <- data_set %>%
 
 violin_eg + box_eg + jitter_eg
 ```
+
+::: {.notes}
+- Im Jitterplot wird klar dass die Daten komplett zufällig verteilt sind
+- Jitterplots sind gut für kleine Stichproben
+- Jitter sorgt für eine bessere Sichtbarkeit der einzelnen Datenpunkte indem sie auf der X-Achse verteilt werden, was Überlappungen reduziert
+:::
 
 ## Balken-Wälder 🌳 [Diagramm]{.smallHeader}
 
